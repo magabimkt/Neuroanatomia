@@ -1,5 +1,17 @@
-const CACHE = 'neuro-sem-neura-v0.3.0';
+const CACHE = 'neuro-sem-neura-v0.3.2';
 const ASSETS = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png',
+  './assets/mapas/01_neurulacao.jpg',
+  './assets/mapas/02_potencial_acao.jpg',
+  './assets/mapas/03_celulas_gliais.jpg',
+  './assets/mapas/04_lobos_cerebro.jpg',
+  './assets/mapas/05_nucleos_base.jpg',
+  './assets/mapas/06_tratos_medula.jpg',
+  './assets/mapas/07_sna.jpg',
+  './assets/mapas/08_nervos_cranianos_p1.jpg',
+  './assets/mapas/09_nervos_cranianos_p2.jpg',
+  './assets/mapas/10_circuitos_dopamina.jpg',
+  './assets/mapas/11_tronco_encefalico.jpg',
+  './assets/mapas/12_esquizofrenia.jpg',
   './assets/mapas/organizacao-sistema-nervoso.svg',
   './assets/mapas/medula-espinhal.svg',
   './assets/mapas/tronco-encefalico.svg',
