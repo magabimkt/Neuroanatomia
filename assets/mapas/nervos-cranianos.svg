@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 560" role="img" aria-labelledby="t d">
+<title id="t">Mapa mental - Nervos Cranianos</title>
+<desc id="d">Mapa mental simplificado sobre nervos sensitivos, motores, mistos e clínica.</desc>
+<rect width="900" height="560" fill="#0d0f14"/>
+<circle cx="450" cy="280" r="110" fill="#f87171" opacity=".18" stroke="#f87171" stroke-width="3"/>
+<text x="450" y="270" text-anchor="middle" fill="#e8eaf0" font-family="Arial" font-size="30" font-weight="700">Nervos</text>
+<text x="450" y="308" text-anchor="middle" fill="#e8eaf0" font-family="Arial" font-size="30" font-weight="700">Cranianos</text>
+<g font-family="Arial" font-size="22" font-weight="700" text-anchor="middle">
+<rect x="70" y="100" width="230" height="76" rx="14" fill="#141820" stroke="#6c8aff"/><text x="185" y="147" fill="#e8eaf0">Sensitivos</text>
+<rect x="600" y="100" width="230" height="76" rx="14" fill="#141820" stroke="#4ade80"/><text x="715" y="147" fill="#e8eaf0">Motores</text>
+<rect x="70" y="388" width="230" height="76" rx="14" fill="#141820" stroke="#fbbf24"/><text x="185" y="435" fill="#e8eaf0">Mistos</text>
+<rect x="600" y="388" width="230" height="76" rx="14" fill="#141820" stroke="#fb923c"/><text x="715" y="435" fill="#e8eaf0">Clínica</text>
+</g>
+</svg>

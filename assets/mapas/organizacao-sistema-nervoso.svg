@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 560" role="img" aria-labelledby="t d">
+<title id="t">Mapa mental - Organização do Sistema Nervoso</title>
+<desc id="d">Mapa mental simplificado sobre SNC, SNP, encéfalo e medula.</desc>
+<rect width="900" height="560" fill="#0d0f14"/>
+<circle cx="450" cy="280" r="95" fill="#2dd4bf" opacity=".18" stroke="#2dd4bf" stroke-width="3"/>
+<text x="450" y="265" text-anchor="middle" fill="#e8eaf0" font-family="Arial" font-size="30" font-weight="700">Sistema</text>
+<text x="450" y="303" text-anchor="middle" fill="#e8eaf0" font-family="Arial" font-size="30" font-weight="700">Nervoso</text>
+<g fill="none" stroke="#6c8aff" stroke-width="3"><path d="M370 235 185 140"/><path d="M530 235 715 140"/><path d="M370 330 185 420"/><path d="M530 330 715 420"/></g>
+<g font-family="Arial" font-size="24" font-weight="700" text-anchor="middle">
+<rect x="70" y="94" width="230" height="86" rx="16" fill="#141820" stroke="#6c8aff"/><text x="185" y="145" fill="#e8eaf0">SNC</text>
+<rect x="600" y="94" width="230" height="86" rx="16" fill="#141820" stroke="#4ade80"/><text x="715" y="145" fill="#e8eaf0">SNP</text>
+<rect x="70" y="376" width="230" height="86" rx="16" fill="#141820" stroke="#fbbf24"/><text x="185" y="427" fill="#e8eaf0">Encéfalo</text>
+<rect x="600" y="376" width="230" height="86" rx="16" fill="#141820" stroke="#f472b6"/><text x="715" y="427" fill="#e8eaf0">Medula</text>
+</g>
+</svg>

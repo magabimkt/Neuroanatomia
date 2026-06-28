@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 560" role="img" aria-labelledby="t d">
+<title id="t">Mapa mental - Diencéfalo</title>
+<desc id="d">Mapa mental simplificado sobre tálamo, hipotálamo, epitálamo e subtálamo.</desc>
+<rect width="900" height="560" fill="#0d0f14"/>
+<circle cx="450" cy="280" r="105" fill="#6c8aff" opacity=".18" stroke="#6c8aff" stroke-width="3"/>
+<text x="450" y="288" text-anchor="middle" fill="#e8eaf0" font-family="Arial" font-size="30" font-weight="700">Diencéfalo</text>
+<g font-family="Arial" font-size="22" font-weight="700" text-anchor="middle">
+<rect x="80" y="95" width="230" height="76" rx="14" fill="#141820" stroke="#6c8aff"/><text x="195" y="142" fill="#e8eaf0">Tálamo</text>
+<rect x="590" y="95" width="230" height="76" rx="14" fill="#141820" stroke="#2dd4bf"/><text x="705" y="142" fill="#e8eaf0">Hipotálamo</text>
+<rect x="80" y="392" width="230" height="76" rx="14" fill="#141820" stroke="#fbbf24"/><text x="195" y="439" fill="#e8eaf0">Epitálamo</text>
+<rect x="590" y="392" width="230" height="76" rx="14" fill="#141820" stroke="#f472b6"/><text x="705" y="439" fill="#e8eaf0">Subtálamo</text>
+</g>
+</svg>

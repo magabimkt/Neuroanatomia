@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 560" role="img" aria-labelledby="t d">
+<title id="t">Mapa mental - Sistema Límbico</title>
+<desc id="d">Mapa mental simplificado sobre memória, emoção, hipocampo e amígdala.</desc>
+<rect width="900" height="560" fill="#0d0f14"/>
+<path d="M305 300c0-85 65-145 145-145s145 60 145 145c0 75-60 125-145 125s-145-50-145-125z" fill="#fbbf24" opacity=".18" stroke="#fbbf24" stroke-width="3"/>
+<text x="450" y="288" text-anchor="middle" fill="#e8eaf0" font-family="Arial" font-size="30" font-weight="700">Sistema</text>
+<text x="450" y="324" text-anchor="middle" fill="#e8eaf0" font-family="Arial" font-size="30" font-weight="700">Límbico</text>
+<g font-family="Arial" font-size="22" font-weight="700" text-anchor="middle">
+<rect x="70" y="105" width="230" height="76" rx="14" fill="#141820" stroke="#6c8aff"/><text x="185" y="152" fill="#e8eaf0">Hipocampo</text>
+<rect x="600" y="105" width="230" height="76" rx="14" fill="#141820" stroke="#f87171"/><text x="715" y="152" fill="#e8eaf0">Amígdala</text>
+<rect x="70" y="390" width="230" height="76" rx="14" fill="#141820" stroke="#4ade80"/><text x="185" y="437" fill="#e8eaf0">Memória</text>
+<rect x="600" y="390" width="230" height="76" rx="14" fill="#141820" stroke="#f472b6"/><text x="715" y="437" fill="#e8eaf0">Emoção</text>
+</g>
+</svg>
