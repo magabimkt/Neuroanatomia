@@ -1,11 +1,11 @@
 {
-  "name": "Neuroanatomia Aprofundada",
-  "short_name": "Neuromapas",
-  "description": "Um guia de estudo de Neurociência",
+  "name": "Neuro sem Neura",
+  "short_name": "Neuro sem Neura",
+  "description": "Aprenda Neuroanatomia através de mapas mentais, esquemas visuais, conexões clínicas e aplicações práticas.",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#0a0d14",
-  "theme_color": "#0a0d14",
+  "background_color": "#0d0f14",
+  "theme_color": "#0d0f14",
   "orientation": "any",
   "icons": [
     { "src": "./icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },

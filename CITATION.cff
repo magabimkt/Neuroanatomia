@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "Se este projeto contribuir para seus estudos, trabalhos academicos, apresentacoes ou materiais educacionais, cite Neuro sem Neura e atribua a autoria a Maria Gabriela Pereira Leite."
+title: "Neuro sem Neura"
+type: website
+authors:
+  - family-names: "Pereira Leite"
+    given-names: "Maria Gabriela"
+year: 2026
+date-released: "2026-06-28"
+url: "https://magabimkt.github.io/Neuroanatomia/"
+repository-code: "https://github.com/magabimkt/Neuroanatomia"
+abstract: "Projeto educacional autoral para estudo de Neuroanatomia por meio de mapas mentais, esquemas visuais, conexoes clinicas e aplicacoes praticas."
+keywords:
+  - Neuroanatomia
+  - Neurociencia
+  - Mapas mentais
+  - Educacao em saude
+  - Recurso educacional
