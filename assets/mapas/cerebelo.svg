@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 560" role="img" aria-labelledby="t d">
+<title id="t">Mapa mental - Cerebelo</title>
+<desc id="d">Mapa mental simplificado sobre coordenação, equilíbrio, pedúnculos e ataxia.</desc>
+<rect width="900" height="560" fill="#0d0f14"/>
+<ellipse cx="450" cy="280" rx="150" ry="110" fill="#4ade80" opacity=".18" stroke="#4ade80" stroke-width="3"/>
+<path d="M315 280c75-70 195-70 270 0M330 325c65-50 175-50 240 0" fill="none" stroke="#4ade80" stroke-width="3"/>
+<text x="450" y="287" text-anchor="middle" fill="#e8eaf0" font-family="Arial" font-size="30" font-weight="700">Cerebelo</text>
+<g font-family="Arial" font-size="22" font-weight="700" text-anchor="middle">
+<rect x="70" y="100" width="230" height="76" rx="14" fill="#141820" stroke="#6c8aff"/><text x="185" y="147" fill="#e8eaf0">Equilíbrio</text>
+<rect x="600" y="100" width="230" height="76" rx="14" fill="#141820" stroke="#fbbf24"/><text x="715" y="147" fill="#e8eaf0">Coordenação</text>
+<rect x="70" y="388" width="230" height="76" rx="14" fill="#141820" stroke="#a78bfa"/><text x="185" y="435" fill="#e8eaf0">Pedúnculos</text>
+<rect x="600" y="388" width="230" height="76" rx="14" fill="#141820" stroke="#f87171"/><text x="715" y="435" fill="#e8eaf0">Ataxia</text>
+</g>
+</svg>

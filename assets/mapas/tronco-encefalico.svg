@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 560" role="img" aria-labelledby="t d">
+<title id="t">Mapa mental - Tronco Encefálico</title>
+<desc id="d">Mapa mental simplificado sobre mesencéfalo, ponte, bulbo e núcleos.</desc>
+<rect width="900" height="560" fill="#0d0f14"/>
+<path d="M390 90h120v115c55 25 85 71 85 126 0 88-65 150-145 150s-145-62-145-150c0-55 30-101 85-126z" fill="#fb923c" opacity=".18" stroke="#fb923c" stroke-width="3"/>
+<text x="450" y="292" text-anchor="middle" fill="#e8eaf0" font-family="Arial" font-size="30" font-weight="700">Tronco</text>
+<g font-family="Arial" font-size="22" font-weight="700" text-anchor="middle">
+<rect x="80" y="110" width="230" height="76" rx="14" fill="#141820" stroke="#6c8aff"/><text x="195" y="157" fill="#e8eaf0">Mesencéfalo</text>
+<rect x="590" y="110" width="230" height="76" rx="14" fill="#141820" stroke="#4ade80"/><text x="705" y="157" fill="#e8eaf0">Ponte</text>
+<rect x="80" y="380" width="230" height="76" rx="14" fill="#141820" stroke="#fbbf24"/><text x="195" y="427" fill="#e8eaf0">Bulbo</text>
+<rect x="590" y="380" width="230" height="76" rx="14" fill="#141820" stroke="#f472b6"/><text x="705" y="427" fill="#e8eaf0">Núcleos</text>
+</g>
+</svg>
