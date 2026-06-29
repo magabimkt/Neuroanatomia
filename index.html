@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -7,6 +7,12 @@
 <meta name="description" content="Aprenda Neuroanatomia através de mapas mentais, esquemas visuais, conexões clínicas e aplicações práticas.">
 <meta name="author" content="Maria Gabriela">
 <meta name="theme-color" content="#101724">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Neuro sem Neura">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="assets/icons/icon-192.png">
+<link rel="icon" type="image/png" sizes="192x192" href="assets/icons/icon-192.png">
 <meta property="og:title" content="Neuro sem Neura | Neuroanatomia Visual">
 <meta property="og:description" content="Aprenda Neuroanatomia através de mapas mentais, esquemas visuais, conexões clínicas e aplicações práticas.">
 <meta property="og:type" content="website">
@@ -131,5 +137,13 @@ document.addEventListener("keydown",e=>{if(e.key==="Escape")closeMap()});
 document.querySelector("#mapModal").addEventListener("click",e=>{if(e.target.id==="mapModal")closeMap()});
 renderModule(0);renderMaps();const initial=location.hash.replace("#","");if(initial&&document.getElementById(initial))showView(initial);
 </script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(() => {});
+  });
+}
+</script>
 </body>
 </html>
+
