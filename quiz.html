@@ -1,0 +1,480 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Neuro sem Neura | Banco de Questões</title>
+  <meta name="author" content="Maria Gabriela">
+  <meta name="description" content="Demo standalone do banco de questões acadêmicas do projeto Neuro sem Neura.">
+  <style>
+:root {
+  --bg: #0d0f14;
+  --surface: #141820;
+  --surface-2: #1c2230;
+  --border: #273044;
+  --text: #eef2f8;
+  --muted: #a9b4c8;
+  --accent: #6c8aff;
+  --green: #4ade80;
+  --red: #f87171;
+  --cyan: #2dd4bf;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.6;
+}
+.topbar {
+  position: sticky;
+  top: 0;
+  background: rgba(13, 15, 20, 0.95);
+  border-bottom: 1px solid var(--border);
+  padding: 1rem clamp(1rem, 4vw, 2rem);
+  z-index: 10;
+}
+.topbar div { display: grid; gap: 0.1rem; }
+.topbar span, .intro p, label { color: var(--muted); }
+.wrap {
+  max-width: 1040px;
+  margin: 0 auto;
+  padding: clamp(1rem, 4vw, 2.5rem);
+}
+.intro {
+  padding: 2rem 0;
+}
+.eyebrow {
+  margin: 0 0 0.5rem;
+  color: var(--cyan);
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+}
+h1 {
+  margin: 0;
+  max-width: 780px;
+  font-size: clamp(2rem, 6vw, 4rem);
+  line-height: 1.05;
+}
+.controls {
+  display: grid;
+  grid-template-columns: 1fr 180px auto;
+  gap: 0.75rem;
+  align-items: end;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+}
+label { display: grid; gap: 0.35rem; font-weight: 700; }
+select, button {
+  min-height: 44px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text);
+  font: inherit;
+  padding: 0.6rem 0.75rem;
+}
+button {
+  cursor: pointer;
+  font-weight: 800;
+}
+#startBtn {
+  background: var(--accent);
+  color: #090b10;
+  border-color: transparent;
+}
+.question-card, .summary-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 0.85rem;
+}
+.q-meta {
+  color: var(--cyan);
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.question-card h2 {
+  margin: 0.45rem 0 1rem;
+  font-size: 1.08rem;
+}
+.options {
+  display: grid;
+  gap: 0.5rem;
+}
+.option {
+  text-align: left;
+}
+.option.correct {
+  border-color: var(--green);
+  color: var(--green);
+}
+.option.wrong {
+  border-color: var(--red);
+  color: var(--red);
+}
+.feedback {
+  display: none;
+  margin-top: 0.8rem;
+  color: var(--muted);
+}
+.feedback.show {
+  display: block;
+}
+.finish-row {
+  display: flex;
+  justify-content: flex-end;
+  margin: 1rem 0;
+}
+.summary-card strong {
+  color: var(--green);
+}
+@media (max-width: 760px) {
+  .controls {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+  </style>
+</head>
+<body>
+  <header class="topbar">
+    <div>
+      <strong>Neuro sem Neura</strong>
+      <span>Banco de questões · Sprint 0.8.1</span>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="intro">
+      <p class="eyebrow">Revisão ativa</p>
+      <h1>Questões acadêmicas por módulo ou revisão geral.</h1>
+      <p>Esta versão funciona em arquivo único. Escolha um módulo ou faça uma partida geral com perguntas e alternativas embaralhadas.</p>
+    </section>
+
+    <section class="controls" aria-label="Configuração do quiz">
+      <label>
+        Módulo
+        <select id="moduleSelect"></select>
+      </label>
+      <label>
+        Quantidade
+        <select id="countSelect">
+          <option value="10">10 perguntas</option>
+          <option value="15">15 perguntas</option>
+          <option value="20">20 perguntas</option>
+        </select>
+      </label>
+      <button id="startBtn" type="button">Iniciar revisão</button>
+    </section>
+
+    <section class="quiz-area" id="quizArea" aria-live="polite"></section>
+    <section class="result-area" id="resultArea" aria-live="polite"></section>
+  </main>
+
+  <script>
+window.NSN_QUESTIONS = [
+{id:"q001",module:"Neurulação",topic:"Tubo neural",type:"mcq",question:"Durante a neurulação, qual estrutura embrionária origina principalmente encéfalo e medula espinhal?",options:["Crista neural","Tubo neural","Mesoderma paraxial","Endoderma"],answer:1,explanation:"O tubo neural é o precursor do sistema nervoso central, incluindo encéfalo e medula espinhal."},
+{id:"q002",module:"Neurulação",topic:"Crista neural",type:"mcq",question:"Uma alteração prejudica principalmente gânglios sensitivos periféricos. Qual derivado embrionário deve ser lembrado primeiro?",options:["Crista neural","Placa precordal","Tubo neural fechado","Somito"],answer:0,explanation:"Muitos componentes do SNP, incluindo gânglios sensitivos, derivam da crista neural."},
+{id:"q003",module:"Neurulação",topic:"Sequência",type:"mcq",question:"Qual sequência representa melhor a formação inicial do sistema nervoso central?",options:["Sulco neural, ectoderma, placa neural, tubo neural","Ectoderma, placa neural, sulco neural, tubo neural","Tubo neural, crista neural, ectoderma, sulco neural","Crista neural, placa neural, endoderma, tubo neural"],answer:1,explanation:"O ectoderma induzido forma placa neural, que se dobra em sulco neural e fecha formando o tubo neural."},
+{id:"q004",module:"Neurulação",topic:"Folato",type:"mcq",question:"Qual frase é mais correta sobre ácido fólico e defeitos do tubo neural?",options:["Previne todos os defeitos do tubo neural","Reduz o risco quando usado adequadamente antes e no início da gestação","Só tem efeito após o segundo trimestre","Atua apenas depois do nascimento"],answer:1,explanation:"A suplementação adequada reduz risco, mas não elimina todos os fatores envolvidos."},
+{id:"q005",module:"Neurulação",topic:"Clínica",type:"mcq",question:"Falha de fechamento do tubo neural na região caudal se associa mais diretamente a qual condição?",options:["Espinha bífida","Agenesia de corpo caloso isolada","Hemibalismo","Paralisia facial periférica"],answer:0,explanation:"Defeitos caudais do tubo neural podem comprometer medula e arcos vertebrais, como na espinha bífida."},
+{id:"q006",module:"Neurulação",topic:"Conceito",type:"truefalse",question:"A crista neural e o tubo neural têm exatamente o mesmo destino embrionário.",options:["Verdadeiro","Falso"],answer:1,explanation:"O tubo neural origina SNC; a crista neural migra e origina muitos componentes periféricos e outras estruturas."},
+{id:"q007",module:"Neurulação",topic:"Indução",type:"mcq",question:"A formação da placa neural depende principalmente de qual ideia?",options:["Indução de parte do ectoderma para destino neural","Transformação direta do endoderma em neurônios","Migração de músculo para o tubo neural","Calcificação precoce do encéfalo"],answer:0,explanation:"Sinais indutores levam parte do ectoderma a assumir destino neural."},
+{id:"q008",module:"Neurulação",topic:"Mapa",type:"mcq",question:"Ao interpretar o mapa da neurulação, a separação final entre SNC e SNP ajuda principalmente a entender:",options:["A diferença entre tubo neural e crista neural","A contração muscular voluntária","A função do cerebelo","A secreção de prolactina"],answer:0,explanation:"A leitura central é que tubo neural e crista neural seguem destinos diferentes."},
+{id:"q009",module:"Neurulação",topic:"Cavidades",type:"mcq",question:"Por que o formato tubular inicial é importante para compreender anatomia futura?",options:["Porque antecipa cavidades como ventrículos e canal central","Porque elimina a formação da medula","Porque impede diferenciação neural","Porque origina apenas o SNP"],answer:0,explanation:"O tubo neural ajuda a explicar cavidades internas do SNC, como ventrículos e canal central."},
+{id:"q010",module:"Neurulação",topic:"Erro comum",type:"mcq",question:"Qual afirmação representa um erro comum?",options:["A crista neural migra","O tubo neural origina SNC","O tubo neural forma sozinho todo o SNP","A placa neural antecede o tubo neural"],answer:2,explanation:"O SNP envolve muitos derivados da crista neural; não deve ser atribuído todo ao tubo neural."},
+
+{id:"q011",module:"Potencial de ação",topic:"Repouso",type:"mcq",question:"O potencial de repouso neuronal próximo de -70 mV indica que:",options:["O interior celular é relativamente mais negativo que o exterior","O neurônio está morto","Não há gradiente iônico","O cálcio já foi liberado na fenda sináptica"],answer:0,explanation:"O repouso reflete distribuição desigual de íons e permeabilidade seletiva da membrana."},
+{id:"q012",module:"Potencial de ação",topic:"Despolarização",type:"mcq",question:"A fase ascendente do potencial de ação depende principalmente de:",options:["Entrada rápida de Na+","Saída de Ca2+","Entrada de Cl-","Síntese de mielina"],answer:0,explanation:"A abertura de canais de sódio dependentes de voltagem permite entrada de Na+ e despolarização."},
+{id:"q013",module:"Potencial de ação",topic:"Repolarização",type:"mcq",question:"A repolarização ocorre principalmente por:",options:["Entrada de sódio","Saída de potássio","Entrada de neurotransmissores","Formação de astrócitos"],answer:1,explanation:"A abertura de canais de K+ favorece saída de potássio e retorno a valores mais negativos."},
+{id:"q014",module:"Potencial de ação",topic:"Limiar",type:"mcq",question:"Como interpretar o limiar próximo de -55 mV?",options:["Valor didático aproximado, variável entre neurônios","Valor fixo em todas as células do corpo","Valor exclusivo de células gliais","Valor que impede qualquer disparo"],answer:0,explanation:"O limiar varia com tipo celular, região da membrana e densidade de canais."},
+{id:"q015",module:"Potencial de ação",topic:"Tudo-ou-nada",type:"mcq",question:"Dizer que o potencial de ação é tudo-ou-nada significa que:",options:["Estímulos mais fortes aumentam indefinidamente a amplitude","Atingido o limiar, o evento ocorre com amplitude relativamente padronizada","Todo estímulo pequeno gera disparo","A mielina desaparece após o disparo"],answer:1,explanation:"A intensidade costuma ser codificada por frequência de disparos e recrutamento, não por amplitude maior do potencial."},
+{id:"q016",module:"Potencial de ação",topic:"Mielina",type:"mcq",question:"A condução saltatória depende de:",options:["Regeneração do sinal principalmente nos nodos de Ranvier","Ausência completa de canais iônicos","Bloqueio de todos os axônios","Produção de LCR"],answer:0,explanation:"Em axônios mielinizados, o potencial se regenera nos nodos, aumentando a velocidade."},
+{id:"q017",module:"Potencial de ação",topic:"Sinapse",type:"mcq",question:"No terminal axônico, qual íon é essencial para liberação de neurotransmissores?",options:["Ca2+","K+","Cl-","Fe2+"],answer:0,explanation:"A entrada de Ca2+ induz fusão de vesículas sinápticas com a membrana."},
+{id:"q018",module:"Potencial de ação",topic:"Anestésico local",type:"mcq",question:"Anestésicos locais reduzem dor principalmente por interferirem em:",options:["Canais de sódio dependentes de voltagem","Produção de melanina","Secreção de bile","Formação do tubo neural"],answer:0,explanation:"Bloqueio de canais de Na+ prejudica despolarização e condução em fibras sensitivas."},
+{id:"q019",module:"Potencial de ação",topic:"Refratariedade",type:"mcq",question:"O período refratário absoluto ocorre porque:",options:["Canais de sódio ainda estão inativados","O neurônio perdeu seu núcleo","A mielina virou LCR","O potássio deixou de existir"],answer:0,explanation:"Enquanto canais de Na+ estão inativados, novo potencial de ação não pode ser gerado naquele ponto."},
+{id:"q020",module:"Potencial de ação",topic:"Erro comum",type:"mcq",question:"Qual alternativa é incorreta?",options:["Ca2+ é importante no terminal axônico","Mielina aumenta eficiência da condução","Estímulo forte aumenta o tamanho de cada potencial de ação sem limite","Na+ participa da despolarização"],answer:2,explanation:"Potenciais de ação têm amplitude relativamente padronizada; intensidade é codificada por frequência e recrutamento."},
+
+{id:"q021",module:"Células gliais",topic:"Oligodendrócito",type:"mcq",question:"Qual célula forma mielina no sistema nervoso central?",options:["Oligodendrócito","Célula de Schwann","Célula satélite","Fibroblasto"],answer:0,explanation:"Oligodendrócitos mielinizam axônios no SNC."},
+{id:"q022",module:"Células gliais",topic:"Schwann",type:"mcq",question:"Qual célula forma mielina no sistema nervoso periférico?",options:["Astrócito","Oligodendrócito","Célula de Schwann","Microglia"],answer:2,explanation:"Células de Schwann mielinizam axônios no SNP."},
+{id:"q023",module:"Células gliais",topic:"Astrócito",type:"mcq",question:"Uma função importante dos astrócitos é:",options:["Regular ambiente químico e contribuir para barreira hematoencefálica","Produzir diretamente todos os hormônios hipofisários","Gerar movimento voluntário","Formar exclusivamente nervos cranianos"],answer:0,explanation:"Astrócitos regulam íons/neurotransmissores, suporte metabólico e participam da barreira hematoencefálica."},
+{id:"q024",module:"Células gliais",topic:"Microglia",type:"mcq",question:"A microglia é melhor descrita como:",options:["Célula imune residente do SNC","Célula muscular lisa","Axônio mielinizado","Camada embrionária"],answer:0,explanation:"Microglia participa de defesa, remoção de detritos e respostas inflamatórias no SNC."},
+{id:"q025",module:"Células gliais",topic:"Ependimária",type:"mcq",question:"Sobre células ependimárias e LCR, a frase mais correta é:",options:["Revestem ventrículos e canal central; LCR é produzido principalmente nos plexos coroides","Produzem toda mielina periférica","São os principais neurônios motores","Substituem a medula espinhal"],answer:0,explanation:"Ependimárias revestem cavidades; produção de LCR ocorre principalmente nos plexos coroides."},
+{id:"q026",module:"Células gliais",topic:"Comparação",type:"mcq",question:"Uma diferença correta entre oligodendrócito e célula de Schwann é:",options:["Oligodendrócito atua no SNC; Schwann atua no SNP","Ambos existem apenas no sangue","Schwann forma mielina só no córtex","Oligodendrócito não se relaciona com mielina"],answer:0,explanation:"A localização é critério central: oligodendrócito no SNC, Schwann no SNP."},
+{id:"q027",module:"Células gliais",topic:"Clínica",type:"mcq",question:"Lesões desmielinizantes disseminadas no encéfalo e medula apontam para mielina produzida por:",options:["Oligodendrócitos","Células satélites","Crista neural ativa","Células pancreáticas"],answer:0,explanation:"Encéfalo e medula pertencem ao SNC, cuja mielina é formada por oligodendrócitos."},
+{id:"q028",module:"Células gliais",topic:"Regeneração",type:"mcq",question:"Sobre células de Schwann e regeneração periférica, é correto afirmar:",options:["Podem favorecer regeneração, mas não garantem recuperação completa","Impedem qualquer reparo periférico","Transformam-se em córtex cerebral","Produzem dopamina mesolímbica"],answer:0,explanation:"Schwann ajudam no ambiente de reparo periférico, mas a recuperação depende de múltiplos fatores."},
+{id:"q029",module:"Células gliais",topic:"Satélites",type:"mcq",question:"Células satélites são associadas principalmente a:",options:["Corpos neuronais em gânglios periféricos","Nodos de Ranvier centrais","Ventrículos laterais apenas","Núcleo subtalâmico"],answer:0,explanation:"Elas regulam o microambiente de corpos neuronais em gânglios do SNP."},
+{id:"q030",module:"Células gliais",topic:"Erro comum",type:"mcq",question:"Qual afirmação deve ser evitada?",options:["Glia apenas preenche espaço e não participa da função neural","Microglia participa de defesa","Astrócitos regulam ambiente neural","Schwann mieliniza no SNP"],answer:0,explanation:"Glia participa ativamente de suporte, mielina, defesa, metabolismo e regulação sináptica."},
+
+{id:"q031",module:"Lobos do cérebro",topic:"Frontal",type:"mcq",question:"Lesão frontal pode comprometer principalmente:",options:["Funções executivas, planejamento e controle inibitório","Apenas produção de LCR","Contração da bexiga exclusivamente","Fechamento do tubo neural"],answer:0,explanation:"O lobo frontal participa de funções executivas, planejamento, controle motor e linguagem expressiva."},
+{id:"q032",module:"Lobos do cérebro",topic:"Parietal",type:"mcq",question:"O lobo parietal está fortemente associado a:",options:["Processamento somatossensorial e integração espacial","Secreção de prolactina","Formação de células de Schwann","Controle exclusivo da respiração"],answer:0,explanation:"Parietal processa tato, propriocepção e integração sensorial/espacial."},
+{id:"q033",module:"Lobos do cérebro",topic:"Temporal",type:"mcq",question:"O lobo temporal participa de:",options:["Audição, memória e aspectos da linguagem","Movimento ocular pelo troclear apenas","Decussação das pirâmides","Produção de bile"],answer:0,explanation:"Temporal se relaciona a audição, memória e compreensão linguística em redes específicas."},
+{id:"q034",module:"Lobos do cérebro",topic:"Occipital",type:"mcq",question:"O lobo occipital está mais diretamente relacionado a:",options:["Processamento visual","Regulação da temperatura","Mielina periférica","Reflexo patelar"],answer:0,explanation:"O córtex visual primário fica no lobo occipital."},
+{id:"q035",module:"Lobos do cérebro",topic:"Linguagem",type:"mcq",question:"Sobre áreas de Broca e Wernicke, é mais correto afirmar:",options:["São referências clássicas dentro de redes amplas de linguagem","Explicam sozinhas toda a linguagem humana","Existem apenas no cerebelo","Não têm relação com linguagem"],answer:0,explanation:"Linguagem envolve redes distribuídas, embora Broca e Wernicke sejam referências didáticas importantes."},
+{id:"q036",module:"Lobos do cérebro",topic:"Redes",type:"truefalse",question:"Funções complexas como memória e atenção dependem de redes, não de uma única gaveta anatômica isolada.",options:["Verdadeiro","Falso"],answer:0,explanation:"Funções complexas emergem de circuitos distribuídos e integrados."},
+{id:"q037",module:"Lobos do cérebro",topic:"Mapa",type:"mcq",question:"A melhor forma de usar um mapa dos lobos cerebrais é:",options:["Como ponto inicial para relacionar regiões, funções e redes","Como prova de que cada lobo faz uma única função","Como substituto completo de neuroanatomia","Como lista sem conexão clínica"],answer:0,explanation:"Mapas ajudam a organizar, mas devem ser conectados a redes e aplicações."},
+{id:"q038",module:"Lobos do cérebro",topic:"Clínica",type:"mcq",question:"Alteração de planejamento, impulsividade e dificuldade de organização sugerem investigar redes envolvendo principalmente:",options:["Lobo frontal","Lobo occipital isolado","Medula sacral apenas","Plexo coroide"],answer:0,explanation:"Funções executivas dependem fortemente de circuitos frontais e suas conexões."},
+{id:"q039",module:"Lobos do cérebro",topic:"Integração",type:"mcq",question:"Por que é perigoso decorar lobos sem redes?",options:["Porque pode gerar localização rígida e simplista de funções complexas","Porque o cérebro não tem lobos","Porque todos os lobos fazem apenas visão","Porque impede a existência de neurônios"],answer:0,explanation:"A localização é útil, mas funções complexas dependem de redes integradas."},
+{id:"q040",module:"Lobos do cérebro",topic:"Erro comum",type:"mcq",question:"Qual frase é inadequada?",options:["O lobo occipital participa da visão","O frontal participa de planejamento","A linguagem inteira mora em uma única área","O temporal participa de audição"],answer:2,explanation:"Linguagem é função distribuída, embora certas áreas sejam altamente relevantes."},
+
+{id:"q041",module:"Núcleos da base",topic:"Via direta",type:"mcq",question:"A via direta dos núcleos da base tende a:",options:["Facilitar movimento desejado","Impedir toda contração muscular","Produzir LCR","Formar o tubo neural"],answer:0,explanation:"A via direta facilita a seleção e execução de movimentos desejados."},
+{id:"q042",module:"Núcleos da base",topic:"Via indireta",type:"mcq",question:"A via indireta está associada principalmente a:",options:["Inibição de movimentos indesejados","Produção de mielina no SNP","Paladar anterior da língua","Visão occipital"],answer:0,explanation:"A via indireta ajuda a suprimir movimentos concorrentes ou indesejados."},
+{id:"q043",module:"Núcleos da base",topic:"Hiperdireta",type:"mcq",question:"A via hiperdireta é melhor entendida como:",options:["Freio rápido do movimento","Via de formação do hipocampo","Canal de LCR","Nervo craniano sensorial"],answer:0,explanation:"A via hiperdireta envolve o núcleo subtalâmico e funciona como controle rápido de parada."},
+{id:"q044",module:"Núcleos da base",topic:"Dopamina",type:"mcq",question:"Nos núcleos da base, a dopamina tende a favorecer movimento porque:",options:["Estimula D1 na via direta e reduz atividade da via indireta por D2","Bloqueia todos os neurônios motores","Produz acetilcolina nos músculos","Fecha o tubo neural"],answer:0,explanation:"O efeito pró-movimento depende da modulação diferenciada de receptores D1 e D2."},
+{id:"q045",module:"Núcleos da base",topic:"Parkinson",type:"mcq",question:"A doença de Parkinson envolve principalmente perda dopaminérgica na via:",options:["Nigroestriatal","Tuberoinfundibular","Olfatória direta","Corticoespinal"],answer:0,explanation:"Degeneração de neurônios dopaminérgicos nigroestriatais altera circuitos motores."},
+{id:"q046",module:"Núcleos da base",topic:"Subtalâmico",type:"mcq",question:"Lesão do núcleo subtalâmico pode causar:",options:["Hemibalismo","Anencefalia","Perda isolada de olfato","Aumento direto de LCR"],answer:0,explanation:"O núcleo subtalâmico participa de circuitos de freio motor; lesões podem gerar movimentos amplos involuntários."},
+{id:"q047",module:"Núcleos da base",topic:"Clínica",type:"mcq",question:"Bradicinesia e rigidez no Parkinson se relacionam a:",options:["Desequilíbrio dos circuitos dos núcleos da base por perda dopaminérgica","Lesão exclusiva do lobo occipital","Excesso de LCR ependimário","Falha isolada do nervo olfatório"],answer:0,explanation:"A perda dopaminérgica muda o equilíbrio entre facilitação e inibição do movimento."},
+{id:"q048",module:"Núcleos da base",topic:"Huntington",type:"mcq",question:"Sobre Huntington, a explicação mais cuidadosa é:",options:["Degeneração estriatal progressiva com impacto importante na via indireta no início","Apenas excesso simples de dopamina","Lesão primária do nervo óptico","Falha de neurulação cranial"],answer:0,explanation:"Huntington não deve ser reduzido a uma seta; envolve degeneração estriatal e circuitos motores/cognitivos."},
+{id:"q049",module:"Núcleos da base",topic:"Função",type:"mcq",question:"Os núcleos da base participam principalmente de:",options:["Seleção, modulação e inibição de programas motores e comportamentais","Produção de ossos cranianos apenas","Digestão intestinal direta","Visão primária"],answer:0,explanation:"Eles modulam circuitos motores, cognitivos e comportamentais."},
+{id:"q050",module:"Núcleos da base",topic:"Erro comum",type:"mcq",question:"Qual frase deve ser evitada?",options:["Dopamina liga movimento como um botão simples","Via direta facilita movimento","Via indireta inibe movimentos concorrentes","Núcleo subtalâmico participa da via hiperdireta"],answer:0,explanation:"Dopamina modula circuitos; não é um botão simples de movimento."},
+
+{id:"q051",module:"Tratos da medula",topic:"Coluna dorsal",type:"mcq",question:"A coluna dorsal/lemnisco medial conduz principalmente:",options:["Tato fino, vibração e propriocepção consciente","Dor e temperatura apenas","Motricidade ocular","Secreção salivar"],answer:0,explanation:"Essa via conduz modalidades epicríticas e propriocepção consciente."},
+{id:"q052",module:"Tratos da medula",topic:"Espinotalâmico",type:"mcq",question:"O trato espinotalâmico lateral conduz principalmente:",options:["Dor e temperatura","Visão central","Expressão facial","Produção de dopamina"],answer:0,explanation:"Dor e temperatura cruzam na medula e seguem pelo sistema anterolateral."},
+{id:"q053",module:"Tratos da medula",topic:"Corticoespinal",type:"mcq",question:"O trato corticoespinal lateral está associado a:",options:["Movimento voluntário fino","Paladar posterior","Homeostase térmica","Produção de LCR"],answer:0,explanation:"Ele conduz comandos motores voluntários, especialmente para movimentos finos."},
+{id:"q054",module:"Tratos da medula",topic:"Cruzamento",type:"mcq",question:"A coluna dorsal/lemnisco medial cruza principalmente:",options:["No bulbo","No cerebelo","Na retina","No plexo coroide"],answer:0,explanation:"Fibras da coluna dorsal fazem sinapse no bulbo e cruzam como fibras arqueadas internas."},
+{id:"q055",module:"Tratos da medula",topic:"Cruzamento",type:"mcq",question:"Dor e temperatura geralmente cruzam:",options:["Na medula, poucos segmentos após entrada","Apenas no córtex frontal","Somente na hipófise","Nunca cruzam"],answer:0,explanation:"A via espinotalâmica cruza em níveis medulares próximos à entrada."},
+{id:"q056",module:"Tratos da medula",topic:"Brown-Séquard",type:"mcq",question:"A síndrome de Brown-Séquard é útil para estudar:",options:["Diferenças de cruzamento entre vias medulares","Produção de melanina","Ritmos circadianos","Nervos olfatórios"],answer:0,explanation:"Hemissecção medular ilustra padrões ipsilaterais e contralaterais de perda."},
+{id:"q057",module:"Tratos da medula",topic:"Propriocepção",type:"mcq",question:"Perda de vibração e propriocepção consciente sugere comprometimento de:",options:["Coluna dorsal/lemnisco medial","Trato espinotalâmico lateral apenas","Via tuberoinfundibular","Nervo facial"],answer:0,explanation:"Essas modalidades dependem da coluna dorsal/lemnisco medial."},
+{id:"q058",module:"Tratos da medula",topic:"Motricidade",type:"mcq",question:"Fraqueza voluntária abaixo de uma lesão medular pode envolver:",options:["Trato corticoespinal","Hipocampo exclusivamente","Plexo coroide","Nervo olfatório"],answer:0,explanation:"O trato corticoespinal conduz comandos motores descendentes."},
+{id:"q059",module:"Tratos da medula",topic:"Mapa",type:"mcq",question:"Ao estudar tratos medulares, a melhor pergunta inicial é:",options:["Qual modalidade, onde cruza e qual lado é afetado?","Qual cor tem o mapa?","Qual estrutura produz prolactina?","Qual lobo é visual?"],answer:0,explanation:"Modalidade, cruzamento e lateralidade organizam o raciocínio clínico."},
+{id:"q060",module:"Tratos da medula",topic:"Erro comum",type:"mcq",question:"Qual erro deve ser evitado?",options:["Achar que todas as vias cruzam no mesmo nível","Dizer que coluna dorsal conduz vibração","Dizer que trato corticoespinal participa de movimento","Dizer que dor e temperatura cruzam na medula"],answer:0,explanation:"Cada via tem padrão próprio de cruzamento e função."},
+
+{id:"q061",module:"Sistema nervoso autônomo",topic:"Simpático",type:"mcq",question:"A frase 'luta ou fuga' é melhor entendida como:",options:["Resumo didático do simpático, não regra absoluta","Descrição completa de todo o SNA","Função exclusiva do cerebelo","Sinônimo de tubo neural"],answer:0,explanation:"Simpático atua continuamente e com exceções; 'luta ou fuga' é porta de entrada didática."},
+{id:"q062",module:"Sistema nervoso autônomo",topic:"Parassimpático",type:"mcq",question:"'Repouso e digestão' se associa didaticamente ao:",options:["Parassimpático","Nervo óptico","Trato corticoespinal","Núcleo subtalâmico"],answer:0,explanation:"Parassimpático favorece funções de conservação e digestão, embora atue de modo integrado."},
+{id:"q063",module:"Sistema nervoso autônomo",topic:"Neurotransmissores",type:"mcq",question:"A maioria dos neurônios pós-ganglionares simpáticos usa:",options:["Noradrenalina","Dopamina tuberoinfundibular","Glutamato visual apenas","Melatonina"],answer:0,explanation:"A noradrenalina é típica no pós-ganglionar simpático, com exceções."},
+{id:"q064",module:"Sistema nervoso autônomo",topic:"Exceção",type:"mcq",question:"Qual é uma exceção clássica simpática colinérgica?",options:["Glândulas sudoríparas","Nervo óptico","Hipocampo","Coluna dorsal"],answer:0,explanation:"Glândulas sudoríparas recebem inervação simpática colinérgica."},
+{id:"q065",module:"Sistema nervoso autônomo",topic:"Medula adrenal",type:"mcq",question:"A medula adrenal pode ser compreendida como:",options:["Gânglio simpático modificado","Córtex visual primário","Nervo craniano misto","Plexo coroide"],answer:0,explanation:"Ela recebe estímulo simpático e libera catecolaminas no sangue."},
+{id:"q066",module:"Sistema nervoso autônomo",topic:"Pupila",type:"mcq",question:"Dilatação pupilar em resposta de alerta é associada principalmente a:",options:["Ativação simpática","Via mesocortical isolada","Coluna dorsal","Célula ependimária"],answer:0,explanation:"O simpático participa da midríase em contextos de alerta."},
+{id:"q067",module:"Sistema nervoso autônomo",topic:"Coração",type:"mcq",question:"Em geral, aumento de frequência cardíaca é efeito associado a:",options:["Simpático","Parassimpático isolado","Hipocampo","Nervo olfatório"],answer:0,explanation:"A ativação simpática tende a aumentar frequência e contratilidade cardíaca."},
+{id:"q068",module:"Sistema nervoso autônomo",topic:"Integração",type:"truefalse",question:"Simpático e parassimpático atuam de forma integrada e contínua, não apenas em situações extremas.",options:["Verdadeiro","Falso"],answer:0,explanation:"O SNA ajusta funções corporais continuamente."},
+{id:"q069",module:"Sistema nervoso autônomo",topic:"Digestão",type:"mcq",question:"Estimulação digestiva em repouso se associa mais a:",options:["Parassimpático","Trato corticoespinal","Cerebelo","Via nigroestriatal"],answer:0,explanation:"Parassimpático favorece motilidade e secreções digestivas."},
+{id:"q070",module:"Sistema nervoso autônomo",topic:"Erro comum",type:"mcq",question:"Qual afirmação é simplista demais?",options:["Simpático e parassimpático são botões opostos que nunca atuam juntos","Simpático pode aumentar frequência cardíaca","Parassimpático participa da digestão","Há exceções nos neurotransmissores autonômicos"],answer:0,explanation:"A fisiologia autonômica é integrada, contextual e cheia de ajustes finos."},
+
+{id:"q071",module:"Nervos cranianos I a VI",topic:"I",type:"mcq",question:"O nervo olfatório está relacionado a:",options:["Olfato","Visão","Mastigação","Abdução ocular"],answer:0,explanation:"O nervo I conduz informações olfatórias."},
+{id:"q072",module:"Nervos cranianos I a VI",topic:"II",type:"mcq",question:"O nervo óptico deve ser lembrado como:",options:["Relacionado à visão e frequentemente tratado como extensão do SNC","Responsável pela mastigação","Motor da língua","Parte do sistema límbico"],answer:0,explanation:"O nervo II conduz visão e possui particularidades de SNC."},
+{id:"q073",module:"Nervos cranianos I a VI",topic:"III",type:"mcq",question:"O oculomotor participa de:",options:["Movimentos oculares, constrição pupilar e acomodação","Olfato apenas","Sensibilidade facial exclusiva","Deglutição"],answer:0,explanation:"O III tem função motora somática e componente parassimpático."},
+{id:"q074",module:"Nervos cranianos I a VI",topic:"IV",type:"mcq",question:"O nervo troclear inerva:",options:["Músculo oblíquo superior","Músculo masseter","Língua","Glândula parótida"],answer:0,explanation:"O IV par craniano inerva o oblíquo superior; sua ação depende da posição ocular."},
+{id:"q075",module:"Nervos cranianos I a VI",topic:"V",type:"mcq",question:"O trigêmeo está associado a:",options:["Sensibilidade facial e mastigação","Visão central","Paladar posterior apenas","Controle de prolactina"],answer:0,explanation:"O V é misto: sensitivo para face e motor para mastigação."},
+{id:"q076",module:"Nervos cranianos I a VI",topic:"VI",type:"mcq",question:"O nervo abducente inerva principalmente:",options:["Reto lateral","Oblíquo superior","Masseter","Esternocleidomastoideo"],answer:0,explanation:"O VI abduz o olho por ação do músculo reto lateral."},
+{id:"q077",module:"Nervos cranianos I a VI",topic:"Reflexo",type:"mcq",question:"A via aferente do reflexo corneano envolve principalmente:",options:["Trigêmeo","Hipoglosso","Acessório","Vestibulococlear"],answer:0,explanation:"O trigêmeo conduz sensibilidade corneana; o facial participa da resposta eferente."},
+{id:"q078",module:"Nervos cranianos I a VI",topic:"Diplopia",type:"mcq",question:"Diplopia pode sugerir comprometimento de:",options:["Nervos oculomotores III, IV ou VI","Apenas nervo olfatório","Somente nervo vago","Células satélites"],answer:0,explanation:"III, IV e VI controlam músculos extraoculares."},
+{id:"q079",module:"Nervos cranianos I a VI",topic:"Pupila",type:"mcq",question:"Constrição pupilar depende de componente parassimpático do:",options:["Oculomotor","Troclear","Abducente","Olfatório"],answer:0,explanation:"Fibras parassimpáticas do III participam da miose."},
+{id:"q080",module:"Nervos cranianos I a VI",topic:"Erro comum",type:"mcq",question:"Qual frase é simplista demais?",options:["Troclear apenas move o olho 'baixo e dentro' em qualquer contexto","Trigêmeo tem função sensitiva facial","Oculomotor tem componente parassimpático","Abducente atua no reto lateral"],answer:0,explanation:"A ação do oblíquo superior varia com a posição do olho."},
+
+{id:"q081",module:"Nervos cranianos VII a XII",topic:"VII",type:"mcq",question:"O nervo facial participa de:",options:["Expressão facial, lacrimejamento, salivação e paladar anterior","Audição exclusiva","Movimento da língua exclusivamente","Abdução ocular"],answer:0,explanation:"O VII tem funções motoras, parassimpáticas e gustativas."},
+{id:"q082",module:"Nervos cranianos VII a XII",topic:"VIII",type:"mcq",question:"O vestibulococlear está relacionado a:",options:["Audição e equilíbrio","Expressão facial","Deglutição","Movimento da língua"],answer:0,explanation:"O VIII conduz informações auditivas e vestibulares."},
+{id:"q083",module:"Nervos cranianos VII a XII",topic:"IX",type:"mcq",question:"O glossofaríngeo participa de:",options:["Paladar/sensibilidade do terço posterior da língua e reflexo nauseoso","Visão","Olfato","Abdução ocular"],answer:0,explanation:"O IX é importante para paladar posterior, sensibilidade e deglutição/reflexos."},
+{id:"q084",module:"Nervos cranianos VII a XII",topic:"X",type:"mcq",question:"O nervo vago tem papel importante em:",options:["Funções parassimpáticas torácicas e abdominais","Visão primária","Mastigação exclusiva","Extensão do joelho"],answer:0,explanation:"O X tem ampla ação autonômica e funções em voz/deglutição."},
+{id:"q085",module:"Nervos cranianos VII a XII",topic:"XI",type:"mcq",question:"O nervo acessório inerva principalmente:",options:["Esternocleidomastoideo e trapézio","Reto lateral","Língua","Cóclea"],answer:0,explanation:"O XI atua em músculos do pescoço e ombro."},
+{id:"q086",module:"Nervos cranianos VII a XII",topic:"XII",type:"mcq",question:"O hipoglosso controla principalmente:",options:["Movimentos da língua","Audição","Olfato","Pupila"],answer:0,explanation:"O XII é motor para a língua."},
+{id:"q087",module:"Nervos cranianos VII a XII",topic:"Hipoglosso",type:"mcq",question:"Em lesão periférica do hipoglosso, a língua costuma desviar:",options:["Para o lado da lesão","Sempre para o lado oposto","Para cima apenas","Não desvia nunca"],answer:0,explanation:"Lesão periférica enfraquece musculatura ipsilateral, desviando a língua para o lado lesionado."},
+{id:"q088",module:"Nervos cranianos VII a XII",topic:"Vago",type:"mcq",question:"Qual cuidado conceitual sobre o vago é correto?",options:["Tem ampla função visceral, mas não deve ser dito que inerva todas as vísceras abdominais sem limite","Só controla a retina","É exclusivamente motor da língua","É idêntico ao facial"],answer:0,explanation:"A função vagal é ampla, mas possui limites anatômicos."},
+{id:"q089",module:"Nervos cranianos VII a XII",topic:"Clínica",type:"mcq",question:"Disfonia, disfagia e alteração de reflexo nauseoso podem envolver especialmente:",options:["IX e X","I e II apenas","III e IV apenas","VI isolado"],answer:0,explanation:"Glossofaríngeo e vago participam de deglutição, palato/faringe e reflexos."},
+{id:"q090",module:"Nervos cranianos VII a XII",topic:"Erro comum",type:"mcq",question:"Qual associação está incorreta?",options:["Vestibulococlear - olfato","Facial - expressão facial","Hipoglosso - língua","Acessório - trapézio/ECM"],answer:0,explanation:"Vestibulococlear se relaciona a audição e equilíbrio, não olfato."},
+
+{id:"q091",module:"Circuitos da dopamina",topic:"Mesolímbica",type:"mcq",question:"A via mesolímbica deve ser descrita preferencialmente como relacionada a:",options:["Recompensa, motivação, reforço e saliência","Apenas prazer de modo simplista","Produção de LCR","Tato fino"],answer:0,explanation:"'Via do prazer' é simplificação; saliência, motivação e reforço são termos mais adequados."},
+{id:"q092",module:"Circuitos da dopamina",topic:"Mesocortical",type:"mcq",question:"A via mesocortical projeta-se principalmente para:",options:["Córtex pré-frontal","Medula sacral","Cóclea","Plexo coroide"],answer:0,explanation:"A via mesocortical conecta VTA ao córtex pré-frontal, participando de funções cognitivas."},
+{id:"q093",module:"Circuitos da dopamina",topic:"Nigroestriatal",type:"mcq",question:"A via nigroestriatal é importante para:",options:["Circuitos motores dos núcleos da base","Produção de bile","Visão primária","Paladar anterior"],answer:0,explanation:"Ela conecta substância negra ao estriado e é crítica em movimento."},
+{id:"q094",module:"Circuitos da dopamina",topic:"Tuberoinfundibular",type:"mcq",question:"Na via tuberoinfundibular, a dopamina normalmente:",options:["Inibe secreção de prolactina","Aumenta diretamente LCR","Forma mielina","Fecha o tubo neural"],answer:0,explanation:"Bloqueio dopaminérgico nessa via pode aumentar prolactina."},
+{id:"q095",module:"Circuitos da dopamina",topic:"Antipsicóticos",type:"mcq",question:"Bloqueio D2 pode reduzir sintomas positivos, mas também causar efeitos motores por ação na via:",options:["Nigroestriatal","Olfatória","Coluna dorsal","Vestibular"],answer:0,explanation:"Bloqueio nigroestriatal pode gerar sintomas extrapiramidais."},
+{id:"q096",module:"Circuitos da dopamina",topic:"Prolactina",type:"mcq",question:"Hiperprolactinemia por antipsicótico se explica por interferência na via:",options:["Tuberoinfundibular","Corticoespinal","Óptica","Espinotalâmica"],answer:0,explanation:"A dopamina inibe prolactina; bloqueio D2 pode elevar prolactina."},
+{id:"q097",module:"Circuitos da dopamina",topic:"VTA",type:"mcq",question:"A área tegmental ventral é origem importante de vias:",options:["Mesolímbica e mesocortical","Coluna dorsal e corticoespinal","Facial e vago","Óptica e olfatória"],answer:0,explanation:"VTA origina projeções dopaminérgicas para regiões límbicas e pré-frontais."},
+{id:"q098",module:"Circuitos da dopamina",topic:"Parkinson",type:"mcq",question:"Parkinson se relaciona mais diretamente à via:",options:["Nigroestriatal","Tuberoinfundibular","Mesolímbica exclusivamente","Olfatória"],answer:0,explanation:"A perda dopaminérgica nigroestriatal compromete circuitos motores."},
+{id:"q099",module:"Circuitos da dopamina",topic:"Cognição",type:"mcq",question:"Alterações cognitivas e executivas podem envolver circuitos dopaminérgicos:",options:["Mesocorticais","Vestibulares periféricos","Ependimários","Somáticos puros"],answer:0,explanation:"A via mesocortical se relaciona ao córtex pré-frontal e funções cognitivas."},
+{id:"q100",module:"Circuitos da dopamina",topic:"Erro comum",type:"mcq",question:"Qual frase deve ser evitada?",options:["Dopamina é apenas prazer","Dopamina participa de motivação","Dopamina modula movimento","Dopamina inibe prolactina"],answer:0,explanation:"A dopamina participa de múltiplas funções; reduzi-la a prazer empobrece o raciocínio."},
+
+{id:"q101",module:"Tronco encefálico",topic:"Divisões",type:"mcq",question:"As três grandes porções do tronco encefálico são:",options:["Mesencéfalo, ponte e bulbo","Tálamo, hipotálamo e córtex","Hipocampo, amígdala e giro do cíngulo","Frontal, parietal e occipital"],answer:0,explanation:"O tronco é formado por mesencéfalo, ponte e bulbo."},
+{id:"q102",module:"Tronco encefálico",topic:"Mesencéfalo",type:"mcq",question:"O mesencéfalo está associado, entre outras funções, a:",options:["Movimentos oculares e colículos","Produção exclusiva de LCR","Controle direto da língua pelo XII","Olfação cortical primária"],answer:0,explanation:"Mesencéfalo contém estruturas visuais/auditivas reflexas e núcleos oculomotores."},
+{id:"q103",module:"Tronco encefálico",topic:"Ponte",type:"mcq",question:"A ponte se relaciona fortemente com:",options:["Conexões com cerebelo e núcleos de nervos cranianos","Formação do tubo neural caudal","Córtex occipital primário","Células satélites"],answer:0,explanation:"A ponte participa de comunicação com cerebelo e contém núcleos de nervos cranianos."},
+{id:"q104",module:"Tronco encefálico",topic:"Bulbo",type:"mcq",question:"O bulbo é importante para:",options:["Funções cardiovasculares, respiratórias e decussação das pirâmides","Memória declarativa exclusiva","Paladar anterior isolado","Mielina periférica"],answer:0,explanation:"Bulbo contém centros vitais e decussação de fibras corticoespinais."},
+{id:"q105",module:"Tronco encefálico",topic:"Respiração",type:"mcq",question:"A forma mais correta de falar sobre controle automático da respiração é:",options:["Envolve circuitos do tronco encefálico, especialmente bulbo e ponte","Fica apenas no bulbo como centro isolado","Depende só do lobo occipital","Depende apenas do nervo olfatório"],answer:0,explanation:"Respiração é controlada por redes no tronco, com participação bulbar e pontina."},
+{id:"q106",module:"Tronco encefálico",topic:"Sinais cruzados",type:"mcq",question:"Sinais cruzados em lesões de tronco ocorrem porque:",options:["Núcleos de nervos cranianos e vias longas estão próximos","Não há vias motoras no tronco","O tronco só produz hormônios","A crista neural fecha ali"],answer:0,explanation:"Lesões podem afetar nervo craniano ipsilateral e vias longas contralaterais."},
+{id:"q107",module:"Tronco encefálico",topic:"Formação reticular",type:"mcq",question:"A formação reticular participa de:",options:["Vigília, atenção e funções autonômicas","Produção de melanina","Fechamento do tubo neural","Mielina periférica"],answer:0,explanation:"A formação reticular é rede importante para alerta, sono-vigília e controle autonômico."},
+{id:"q108",module:"Tronco encefálico",topic:"Nervos cranianos",type:"mcq",question:"Muitos núcleos de nervos cranianos estão localizados:",options:["No tronco encefálico","No plexo coroide","No lobo occipital apenas","Na pele"],answer:0,explanation:"O tronco abriga diversos núcleos dos pares cranianos."},
+{id:"q109",module:"Tronco encefálico",topic:"Urgência",type:"mcq",question:"Lesões pequenas no tronco podem ser graves porque:",options:["A região concentra vias longas, núcleos cranianos e funções vitais","O tronco não possui função relevante","Só afetam cabelo","Sempre são assintomáticas"],answer:0,explanation:"A alta densidade funcional torna lesões de tronco potencialmente graves."},
+{id:"q110",module:"Tronco encefálico",topic:"Erro comum",type:"mcq",question:"Qual frase é inadequada?",options:["Respiração fica apenas no bulbo isolado","Bulbo é vital","Ponte conecta-se ao cerebelo","Mesencéfalo tem relação com movimentos oculares"],answer:0,explanation:"Controle respiratório é uma rede do tronco, especialmente bulbo e ponte."},
+
+{id:"q111",module:"Esquizofrenia e dopamina",topic:"Modelo",type:"mcq",question:"A hipótese dopaminérgica da esquizofrenia deve ser entendida como:",options:["Modelo parcial, não explicação única do transtorno","Prova de que esquizofrenia é só dopamina alta","Teoria que elimina fatores sociais e cognitivos","Explicação exclusiva de todos os sintomas"],answer:0,explanation:"Esquizofrenia é multifatorial; dopamina ajuda a entender parte dos sintomas e tratamentos."},
+{id:"q112",module:"Esquizofrenia e dopamina",topic:"Sintomas positivos",type:"mcq",question:"Delírios e alucinações são exemplos de:",options:["Sintomas positivos","Sintomas negativos apenas","Sinais cerebelares","Reflexos medulares"],answer:0,explanation:"Sintomas positivos são experiências acrescentadas ao funcionamento habitual."},
+{id:"q113",module:"Esquizofrenia e dopamina",topic:"Sintomas negativos",type:"mcq",question:"Apatia, anedonia e alogia são exemplos de:",options:["Sintomas negativos","Sintomas positivos","Tratos ascendentes","Nervos cranianos motores"],answer:0,explanation:"Sintomas negativos envolvem redução de funções emocionais, motivacionais e expressivas."},
+{id:"q114",module:"Esquizofrenia e dopamina",topic:"Mesolímbica",type:"mcq",question:"Sintomas positivos são frequentemente relacionados, no modelo dopaminérgico, a alteração na via:",options:["Mesolímbica","Tuberoinfundibular apenas","Coluna dorsal","Óptica"],answer:0,explanation:"Hiperatividade mesolímbica e saliência aberrante ajudam a explicar sintomas positivos."},
+{id:"q115",module:"Esquizofrenia e dopamina",topic:"Mesocortical",type:"mcq",question:"Sintomas negativos e cognitivos são discutidos em relação a redes:",options:["Pré-frontais e mesocorticais","Olfatórias periféricas","Ependimárias","Somáticas puras"],answer:0,explanation:"Circuitos pré-frontais/mesocorticais participam de cognição, motivação e função executiva."},
+{id:"q116",module:"Esquizofrenia e dopamina",topic:"D2",type:"mcq",question:"Muitos antipsicóticos reduzem sintomas positivos por ação sobre:",options:["Receptores D2","Células de Schwann","Nervos cranianos I e II","Plexos coroides"],answer:0,explanation:"Bloqueio D2 é mecanismo comum em muitos antipsicóticos, especialmente para sintomas positivos."},
+{id:"q117",module:"Esquizofrenia e dopamina",topic:"Efeitos motores",type:"mcq",question:"Rigidez após uso de antipsicótico pode envolver bloqueio dopaminérgico na via:",options:["Nigroestriatal","Olfatória","Coluna dorsal","Mesencefálica visual apenas"],answer:0,explanation:"Interferência nigroestriatal pode gerar sintomas extrapiramidais."},
+{id:"q118",module:"Esquizofrenia e dopamina",topic:"Prolactina",type:"mcq",question:"Aumento de prolactina por antipsicótico sugere efeito na via:",options:["Tuberoinfundibular","Corticoespinal","Vestibular","Trigêmea"],answer:0,explanation:"Dopamina inibe prolactina; bloqueio D2 tuberoinfundibular pode elevar prolactina."},
+{id:"q119",module:"Esquizofrenia e dopamina",topic:"Estigma",type:"mcq",question:"Qual frase deve ser evitada por ser reducionista e estigmatizante?",options:["Sintomas negativos são preguiça","O cuidado deve ser multiprofissional","O transtorno é multifatorial","A dopamina é parte do modelo"],answer:0,explanation:"Sintomas negativos são manifestações clínicas, não falha moral ou preguiça."},
+{id:"q120",module:"Esquizofrenia e dopamina",topic:"Cuidado",type:"mcq",question:"Qual abordagem é mais adequada?",options:["Explicar neurobiologia sem reduzir a pessoa ao transtorno","Usar a via dopaminérgica como rótulo da pessoa","Ignorar contexto social","Afirmar que todos respondem igual ao tratamento"],answer:0,explanation:"Boa didática em saúde precisa unir precisão científica e linguagem não estigmatizante."},
+
+{id:"q121",module:"Cerebelo",topic:"Função",type:"mcq",question:"O cerebelo é melhor descrito como estrutura que:",options:["Coordena, compara e ajusta movimentos","Inicia sozinho todo movimento voluntário","Produz dopamina mesolímbica","Forma gânglios sensitivos"],answer:0,explanation:"Ele calibra execução, precisão, equilíbrio e aprendizagem motora."},
+{id:"q122",module:"Cerebelo",topic:"Ataxia",type:"mcq",question:"Ataxia cerebelar significa principalmente:",options:["Descoordenação do movimento","Paralisia completa por perda de força","Perda isolada de olfato","Aumento de prolactina"],answer:0,explanation:"Ataxia é desorganização da coordenação, não sinônimo de fraqueza primária."},
+{id:"q123",module:"Cerebelo",topic:"Dismetria",type:"mcq",question:"Dismetria é:",options:["Erro na medida do movimento, como passar do alvo","Ausência de pupila","Produção de LCR","Dor talâmica"],answer:0,explanation:"Na dismetria, o movimento erra distância, força ou direção."},
+{id:"q124",module:"Cerebelo",topic:"Tremor",type:"mcq",question:"Tremor que aumenta ao se aproximar do alvo sugere:",options:["Tremor de intenção cerebelar","Repouso vagal","Lesão olfatória","Hiperprolactinemia"],answer:0,explanation:"Tremor de intenção é típico de alteração cerebelar."},
+{id:"q125",module:"Cerebelo",topic:"Propriocepção",type:"mcq",question:"Por que o cerebelo usa informações proprioceptivas?",options:["Para comparar posição/movimento real com intenção motora","Para produzir bile","Para formar tubo neural","Para secretar prolactina"],answer:0,explanation:"Propriocepção informa o estado corporal real, permitindo correção do movimento."},
+{id:"q126",module:"Cerebelo",topic:"Equilíbrio",type:"mcq",question:"Equilíbrio depende de integração entre cerebelo e:",options:["Sistema vestibular e propriocepção","Plexo coroide apenas","Nervo olfatório apenas","Via tuberoinfundibular"],answer:0,explanation:"Controle postural exige informações vestibulares, proprioceptivas e cerebelares."},
+{id:"q127",module:"Cerebelo",topic:"Aprendizagem",type:"mcq",question:"Aprender uma habilidade motora repetitiva envolve:",options:["Ajustes cerebelares que reduzem erro ao longo do treino","Exclusão do cerebelo","Bloqueio total do tronco","Produção de células ependimárias"],answer:0,explanation:"Cerebelo participa de aprendizagem motora e refinamento por repetição."},
+{id:"q128",module:"Cerebelo",topic:"Clínica",type:"mcq",question:"Marcha instável, disdiadococinesia e dismetria apontam para:",options:["Comprometimento cerebelar","Lesão exclusiva da retina","Aumento de LCR","Nervo olfatório"],answer:0,explanation:"Esses sinais formam padrão clássico de alteração cerebelar."},
+{id:"q129",module:"Cerebelo",topic:"Força",type:"truefalse",question:"Na lesão cerebelar, a força pode estar preservada apesar da execução motora estar descoordenada.",options:["Verdadeiro","Falso"],answer:0,explanation:"O problema pode ser coordenação/precisão, não geração de força."},
+{id:"q130",module:"Cerebelo",topic:"Erro comum",type:"mcq",question:"Qual frase é incorreta?",options:["O cerebelo inicia diretamente todo movimento voluntário","O cerebelo ajusta precisão","O cerebelo participa de equilíbrio","O cerebelo participa de aprendizagem motora"],answer:0,explanation:"O cerebelo não é o iniciador principal; ele modula e corrige."},
+
+{id:"q131",module:"Diencéfalo",topic:"Tálamo",type:"mcq",question:"O tálamo deve ser entendido como:",options:["Estrutura de integração e retransmissão sensorial, motora, cognitiva e límbica","Apenas uma estação visual simples","Músculo respiratório","Nervo craniano"],answer:0,explanation:"O tálamo participa de múltiplos circuitos, não só sensoriais."},
+{id:"q132",module:"Diencéfalo",topic:"Olfação",type:"mcq",question:"A exceção clássica em relação ao tálamo antes do córtex primário é:",options:["Olfação","Visão","Tato fino","Audição"],answer:0,explanation:"A olfação alcança córtex olfatório primário sem passar primeiro pelo tálamo."},
+{id:"q133",module:"Diencéfalo",topic:"Hipotálamo",type:"mcq",question:"O hipotálamo está fortemente associado a:",options:["Homeostase, controle autonômico e regulação endócrina","Visão primária","Abdução ocular","Mielina periférica"],answer:0,explanation:"Hipotálamo regula temperatura, fome, sede, sono, SNA e hipófise."},
+{id:"q134",module:"Diencéfalo",topic:"Epitálamo",type:"mcq",question:"O epitálamo inclui estrutura associada a melatonina e ritmos biológicos, chamada:",options:["Glândula pineal","Núcleo rubro","Ponte","Amígdala"],answer:0,explanation:"A pineal participa de ritmos biológicos por secreção de melatonina."},
+{id:"q135",module:"Diencéfalo",topic:"Subtálamo",type:"mcq",question:"O subtálamo se conecta funcionalmente a:",options:["Circuitos dos núcleos da base","Plexo coroide apenas","Nervo olfatório","Células satélites"],answer:0,explanation:"O núcleo subtalâmico participa de circuitos motores dos núcleos da base."},
+{id:"q136",module:"Diencéfalo",topic:"Hemibalismo",type:"mcq",question:"Hemibalismo pode ocorrer por lesão em:",options:["Núcleo subtalâmico","Nervo olfatório","Hipocampo bilateral","Célula ependimária"],answer:0,explanation:"Lesão subtalâmica pode gerar movimentos amplos involuntários."},
+{id:"q137",module:"Diencéfalo",topic:"Homeostase",type:"mcq",question:"Sede, fome, temperatura e função endócrina apontam para:",options:["Hipotálamo","Lobo occipital","Nervo abducente","Coluna dorsal"],answer:0,explanation:"Essas funções homeostáticas são fortemente hipotalâmicas."},
+{id:"q138",module:"Diencéfalo",topic:"Dor central",type:"mcq",question:"Déficits sensitivos e dor central podem ocorrer em lesões de:",options:["Tálamo","Nervo acessório","Célula de Schwann","Pineal isolada"],answer:0,explanation:"O tálamo integra muitas vias sensitivas e lesões podem gerar dor central."},
+{id:"q139",module:"Diencéfalo",topic:"Mapa",type:"mcq",question:"Ao interpretar o mapa do diencéfalo, a melhor pergunta é:",options:["Que tipo de controle cada estrutura exerce?","Qual músculo a imagem colore?","Qual alternativa é mais decorativa?","Qual lobo faz tudo sozinho?"],answer:0,explanation:"Tálamo, hipotálamo, epitálamo e subtálamo devem ser entendidos por funções integradoras."},
+{id:"q140",module:"Diencéfalo",topic:"Erro comum",type:"mcq",question:"Qual frase é incompleta demais?",options:["O tálamo é apenas sensorial","O hipotálamo regula homeostase","O subtálamo participa de circuitos motores","A olfação é exceção clássica"],answer:0,explanation:"O tálamo também participa de circuitos motores, cognitivos, límbicos e atencionais."},
+
+{id:"q141",module:"Sistema límbico",topic:"Rede",type:"mcq",question:"O sistema límbico deve ser compreendido como:",options:["Rede funcional, não estrutura única","Um único centro isolado das emoções","Apenas nervo craniano","Somente medula espinhal"],answer:0,explanation:"Ele integra emoção, memória, motivação, saliência e respostas autonômicas."},
+{id:"q142",module:"Sistema límbico",topic:"Amígdala",type:"mcq",question:"A amígdala participa principalmente de:",options:["Saliência emocional, ameaça e aprendizagem emocional","Produção de LCR","Abdução ocular","Mielina periférica"],answer:0,explanation:"A amígdala não é apenas medo; participa de relevância emocional ampla."},
+{id:"q143",module:"Sistema límbico",topic:"Hipocampo",type:"mcq",question:"O hipocampo é essencial para:",options:["Memória declarativa, contexto e consolidação","Movimento do reto lateral","Secreção de prolactina","Formação de Schwann"],answer:0,explanation:"O hipocampo ajuda a formar novas memórias declarativas e contextuais."},
+{id:"q144",module:"Sistema límbico",topic:"Hipotálamo",type:"mcq",question:"No sistema límbico, o hipotálamo ajuda a:",options:["Transformar estados emocionais em respostas autonômicas e endócrinas","Produzir visão primária","Conduzir tato fino","Formar tubo neural"],answer:0,explanation:"Ele conecta emoção a corpo, SNA e hormônios."},
+{id:"q145",module:"Sistema límbico",topic:"Cíngulo",type:"mcq",question:"O giro do cíngulo participa de integração entre:",options:["Emoção, atenção, dor, motivação e decisão","Apenas olfato e visão","Somente LCR","Unicamente neurulação"],answer:0,explanation:"O cíngulo integra componentes cognitivos e afetivos."},
+{id:"q146",module:"Sistema límbico",topic:"Pré-frontal",type:"mcq",question:"A relação com córtex pré-frontal é importante porque:",options:["Ajuda na regulação, avaliação e contextualização emocional","Elimina todas as emoções","Produz mielina periférica","É o único nervo craniano"],answer:0,explanation:"O pré-frontal participa de controle e interpretação de respostas emocionais."},
+{id:"q147",module:"Sistema límbico",topic:"Exemplo",type:"mcq",question:"Coração acelerado ao lembrar local de quase acidente envolve melhor qual integração?",options:["Amígdala, hipocampo, hipotálamo e pré-frontal","Apenas nervo abducente","Somente plexo coroide","Apenas célula ependimária"],answer:0,explanation:"O exemplo une saliência emocional, memória contextual, resposta corporal e avaliação."},
+{id:"q148",module:"Sistema límbico",topic:"Memória",type:"mcq",question:"Dificuldade de formar novas memórias declarativas após lesão bilateral sugere envolvimento de:",options:["Hipocampo","Nervo facial","Trato espinotalâmico","Glândula sudorípara"],answer:0,explanation:"Lesão hipocampal bilateral pode causar amnésia anterógrada."},
+{id:"q149",module:"Sistema límbico",topic:"Estigma",type:"mcq",question:"Qual postura didática é mais adequada?",options:["Explicar redes sem rotular pessoas por respostas emocionais","Dizer que emoção é falta de controle moral","Reduzir todo comportamento a uma estrutura","Ignorar contexto"],answer:0,explanation:"Boa neuroeducação evita reducionismo e estigma."},
+{id:"q150",module:"Sistema límbico",topic:"Erro comum",type:"mcq",question:"Qual afirmação deve ser evitada?",options:["O sistema límbico é apenas o centro das emoções","A amígdala participa de saliência","O hipocampo participa de memória declarativa","O hipotálamo conecta emoção ao corpo"],answer:0,explanation:"Sistema límbico é rede ampla, não um centro único das emoções."}
+];
+
+
+  </script>
+  <script>
+const allQuestions = window.NSN_QUESTIONS || [];
+const moduleSelect = document.querySelector("#moduleSelect");
+const countSelect = document.querySelector("#countSelect");
+const startBtn = document.querySelector("#startBtn");
+const quizArea = document.querySelector("#quizArea");
+const resultArea = document.querySelector("#resultArea");
+
+let currentQuestions = [];
+
+function shuffle(items) {
+  return [...items].sort(() => Math.random() - 0.5);
+}
+
+function uniqueModules() {
+  return [...new Set(allQuestions.map((q) => q.module))];
+}
+
+function setupModules() {
+  const options = ['<option value="__all">Revisão geral</option>']
+    .concat(uniqueModules().map((module) => `<option value="${module}">${module}</option>`));
+  moduleSelect.innerHTML = options.join("");
+}
+
+function prepareQuestion(question) {
+  const options = question.options.map((text, index) => ({
+    text,
+    correct: index === question.answer
+  }));
+  return {...question, shuffledOptions: shuffle(options), answered: false, selectedCorrect: false};
+}
+
+function startQuiz() {
+  const selectedModule = moduleSelect.value;
+  const count = Number(countSelect.value);
+  const source = selectedModule === "__all"
+    ? allQuestions
+    : allQuestions.filter((q) => q.module === selectedModule);
+
+  currentQuestions = shuffle(source).slice(0, count).map(prepareQuestion);
+  resultArea.innerHTML = "";
+  renderQuiz();
+}
+
+function renderQuiz() {
+  quizArea.innerHTML = currentQuestions.map((question, qIndex) => `
+    <article class="question-card" data-question="${qIndex}">
+      <div class="q-meta">${question.module} · ${question.topic}</div>
+      <h2>${qIndex + 1}. ${question.question}</h2>
+      <div class="options">
+        ${question.shuffledOptions.map((option, optionIndex) => `
+          <button class="option" type="button" data-question="${qIndex}" data-option="${optionIndex}">
+            ${option.text}
+          </button>
+        `).join("")}
+      </div>
+      <p class="feedback">${question.explanation}</p>
+    </article>
+  `).join("") + '<div class="finish-row"><button type="button" id="finishBtn">Ver resultado</button></div>';
+}
+
+function answerQuestion(button) {
+  const qIndex = Number(button.dataset.question);
+  const optionIndex = Number(button.dataset.option);
+  const question = currentQuestions[qIndex];
+  if (!question || question.answered) return;
+
+  question.answered = true;
+  const chosen = question.shuffledOptions[optionIndex];
+  question.selectedCorrect = chosen.correct;
+
+  const card = button.closest(".question-card");
+  card.querySelectorAll(".option").forEach((optionButton) => {
+    const opt = question.shuffledOptions[Number(optionButton.dataset.option)];
+    optionButton.disabled = true;
+    if (opt.correct) optionButton.classList.add("correct");
+  });
+  if (!chosen.correct) button.classList.add("wrong");
+  card.querySelector(".feedback").classList.add("show");
+}
+
+function showResult() {
+  const answered = currentQuestions.filter((q) => q.answered).length;
+  const correct = currentQuestions.filter((q) => q.selectedCorrect).length;
+  const total = currentQuestions.length || 1;
+  const percent = Math.round((correct / total) * 100);
+  const missesByTopic = {};
+
+  currentQuestions
+    .filter((q) => q.answered && !q.selectedCorrect)
+    .forEach((q) => {
+      missesByTopic[q.topic] = (missesByTopic[q.topic] || 0) + 1;
+    });
+
+  const topics = Object.entries(missesByTopic)
+    .sort((a, b) => b[1] - a[1])
+    .map(([topic, count]) => `<li>${topic}: ${count} erro(s)</li>`)
+    .join("");
+
+  resultArea.innerHTML = `
+    <div class="summary-card">
+      <h2>Resultado</h2>
+      <p><strong>${percent}%</strong> de acerto · ${correct} correta(s) de ${total} pergunta(s).</p>
+      <p>Respondidas: ${answered} de ${total}.</p>
+      ${topics ? `<p>Assuntos para revisar:</p><ul>${topics}</ul>` : "<p>Nenhum assunto crítico apareceu nesta partida.</p>"}
+    </div>
+  `;
+  resultArea.scrollIntoView({behavior: "smooth", block: "start"});
+}
+
+document.addEventListener("click", (event) => {
+  const option = event.target.closest(".option");
+  if (option) answerQuestion(option);
+
+  if (event.target.id === "finishBtn") showResult();
+});
+
+startBtn.addEventListener("click", startQuiz);
+setupModules();
+startQuiz();
+
+
+  </script>
+</body>
+</html>
